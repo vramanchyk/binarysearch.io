@@ -13,20 +13,14 @@ public class BS138_Count_BST_Nodes_In_Range {
             return 0;
         }
 
-        int cnt = 0;
-
-        if (lo <= root.val && root.val <= hi) {
-            cnt++;
+        if (root.val < lo) {
+            return solve(root.right, lo, hi);
         }
 
-        if (hi > root.val) {
-            cnt += solve(root.right, Math.max(lo, root.val + 1), hi);
+        if (hi < root.val) {
+            return solve(root.left, lo, hi);
         }
 
-        if (lo < root.val) {
-            cnt += solve(root.left, lo, Math.min(root.val - 1, hi));
-        }
-
-        return cnt;
+        return 1 + solve(root.left, lo, hi) + solve(root.right, lo, hi);
     }
 }
