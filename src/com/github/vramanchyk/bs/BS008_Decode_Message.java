@@ -1,52 +1,41 @@
 package com.github.vramanchyk.bs;
 
-import java.util.Arrays;
-
 /**
  * Created by Vitali Ramanchyk on 7/17/20.
  */
 public class BS008_Decode_Message {
 
-    private int findSolution(int offset, String str, int[] dp) {
-        if (dp[offset] != -1) {
-            return dp[offset];
-        }
+    public int solve(String message) {
+        final int n = message.length();
+        final int[] dp = new int[n + 1];
+        dp[0] = 1;
 
-        if (offset >= str.length()) {
-            return 1;
-        }
+        int last = 0;
+        for (int index = 1; index <= n; index++) {
+            final int ch = message.charAt(index - 1) - 48;
 
-        final char ch = str.charAt(offset);
-        if (ch == 0) {
-            return 0;
-        }
+            if (ch != 0) {
+                dp[index] = dp[index - 1];
 
-        int cur = findSolution(offset + 1, str, dp);
-        ;
+                if (index > 1 && last != 0 && last * 10 + ch <= 26) {
+                    dp[index] += dp[index - 2];
+                }
 
-        if (ch == '1') {
+            } else {
+                if (index == 1) {
+                    return 0;
+                }
 
-            if (offset + 1 < str.length()) {
-                cur += findSolution(offset + 2, str, dp);
-            }
-
-        } else if (ch == '2') {
-
-            if (offset + 1 < str.length()) {
-                final char next = str.charAt(offset + 1);
-                if (next <= '6') {
-                    cur += findSolution(offset + 2, str, dp);
+                if (last != 0 && last * 10 + ch <= 26) {
+                    dp[index] = dp[index - 2];
+                } else {
+                    return 0;
                 }
             }
 
+            last = ch;
         }
 
-        return dp[offset] = cur;
-    }
-
-    public int solve(String message) {
-        final int[] dp = new int[message.length() + 1];
-        Arrays.fill(dp, -1);
-        return findSolution(0, message, dp);
+        return dp[n];
     }
 }
